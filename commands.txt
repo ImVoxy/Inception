@@ -1,0 +1,7 @@
+docker build . -t test
+docker run -d -p 443:433 test
+docker system prune --volumes -a
+docker exec -it test bash
+
+docker logs
+dokcer inspect
