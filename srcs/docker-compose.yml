@@ -1,50 +1,60 @@
 version: '3'
 
 services:
-  nginx:
-    depends_on:
-      - wordpress
-    hostname: alpascal
-    build: requirements/nginx
-    container_name: nginx
-    restart: always
-    volumes:
-      - wordpress:/var/www/html
-    ports:
-      - "443:443"
-    networks:
-      - front
-  
-  wordpress:
-    depends_on:
-      - mariadb
-    hostname: alpascal
-    build: requirements/wordpress
-    container_name: wordpress
-    restart: always
-    volumes:
-      - wordpress:/var/www/html
-    networks:
-      - front
-      - back
+ nginx:
+  depends_on:
+   - wordpress
+  hostname: alpascal
+  build: requirements/nginx
+  image: nginx
+  container_name: nginx
+  restart: always
+  volumes:
+   - type: volume
+     source: wp
+     target: /var/www/html
+  ports:
+   - "443:443"
+  networks:
+   - inception
 
-  mariadb:
-    hostname: alpascal
-    build: requirements/mariadb
-    container_name: mariadb
-    restart: always
-    env_file: .env
-    volumes:
-      - db:/var/run/mysqld
-    networks:
-      - back
+ wordpress:
+  depends_on:
+   - mariadb
+  hostname: alpascal
+  build: requirements/wordpress
+  image: wordpress
+  container_name: wordpress
+  restart: always
+  env_file: .env
+  volumes:
+   - type: volume
+     source: wp
+     target: /var/www/html
+   - type: volume
+     source: mariadb
+     target: /var/run/mysqld
+  networks:
+   - inception
+
+ mariadb:
+  hostname: alpascal
+  build: requirements/mariadb
+  image: mariadb
+  container_name: mariadb
+  restart: always
+  env_file: .env
+  volumes:
+   - type: volume
+     source: mariadb
+     target: /var/run/mysqld
+  networks:
+   - inception
 
 volumes:
-  wordpress:
-  db:
+  wp:
+  mariadb:
 
 networks:
-  front:
-    driver: bridge
-  back:
-    driver: bridge
+ inception:
+  driver: bridge

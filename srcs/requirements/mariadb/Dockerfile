@@ -13,8 +13,10 @@ RUN apt-get -y update && \
 
 EXPOSE 3306
 
-COPY tools/mariadb-init.sh /var/www/html/mariadb-init.sh
-#COPY conf/my.cnf /etc/mysql/my.cnf
+#COPY tools/mariadb-init.sh /var/www/html/mariadb-init.sh
+COPY tools/mariadb-init.sh /var/run/mysqld/mariadb-init.sh
+COPY conf/my.cnf /etc/mysql/my.cnf
+COPY conf/50-server.cnf /etc/mysal/mariadb.conf.d/50-server.cnf
 
 #RUN touch /var/www/html/test.sh
 
@@ -25,11 +27,11 @@ COPY tools/mariadb-init.sh /var/www/html/mariadb-init.sh
 #RUN echo 'mysql -e "FLUSH PRIVILEGES";' >> /var/www/html/test.sh
 #RUN echo 'mysqld;' >> /var/www/html/test.sh
 
-RUN chmod 777 /var/www/html/mariadb-init.sh
-#RUN chmod 644 /etc/mysql/my.cnf
-RUN mkdir /run/mysqld
+RUN chmod -R 777 /var/run/mysqld/mariadb-init.sh
+RUN chmod 644 /etc/mysql/my.cnf
 RUN chmod -R 777 /run/mysqld
-RUN chmod -R 777 /var/run/mysqld
+RUN chmod -R 777 /var/lib/mysql
 
 #ENTRYPOINT ["mysqld"]
-ENTRYPOINT ["sh", "/var/www/html/mariadb-init.sh"]
+#ENTRYPOINT ["tail", "-f", "/dev/null"]
+CMD ["/bin/bash", "/var/run/mysqld/mariadb-init.sh"]

@@ -15,11 +15,12 @@ RUN tar xzf /tmp/wp.tar.gz --strip-components=1 -C /var/www/html/
 
 RUN service php7.3-fpm start
 RUN service php7.3-fpm stop
-
+RUN rm /var/www/html/wp-config-sample.php
 
 COPY tools/index.html /var/www/html/
-COPY tools/www.conf /etc/php/7.3/fpm/pool.d/
+COPY conf/www.conf /etc/php/7.3/fpm/pool.d/
 COPY tools/php.ini /etc/php/7.3/fpm/php.ini
+COPY conf/wp-config.php /var/www/html/wp-config.php
 
 EXPOSE 9000
 
