@@ -10,17 +10,26 @@ RUN apt-get -y update && \
 	mkdir -p /run/php && \
 	mkdir -p /var/www/html
 
-RUN curl -k https://wordpress.org/latest.tar.gz --output /tmp/wp.tar.gz
-RUN tar xzf /tmp/wp.tar.gz --strip-components=1 -C /var/www/html/
+#RUN curl -k https://wordpress.org/latest.tar.gz --output /tmp/wp.tar.gz
+#RUN tar xzf /tmp/wp.tar.gz --strip-components=1 -C /var/www/html/
+
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+RUN chmod +x wp-cli.phar
+RUN mv wp-cli.phar /usr/local/bin/wp
+RUN wp core download --allow-root
+RUN mv *.php /var/www/html
+RUN mv wp-* /var/www/html
+#RUN wp core config --allow-root --dbname=db --dbuser=inceptionuser --dbpass=inceptionpwd --dbhost=mariadb:3306 --dbprefix=wp_
+#RUN wp core install --allow-root --url="alpascal.42.fr" --title="Test Site" --admin_user="inceptionuser" --admin_password"inceptionpwd" --admin_email="test@fake.fr"
 
 RUN service php7.3-fpm start
 RUN service php7.3-fpm stop
-RUN rm /var/www/html/wp-config-sample.php
+#RUN rm /var/www/html/wp-config-sample.php
 
 COPY tools/index.html /var/www/html/
 COPY conf/www.conf /etc/php/7.3/fpm/pool.d/
 COPY tools/php.ini /etc/php/7.3/fpm/php.ini
-COPY conf/wp-config.php /var/www/html/wp-config.php
+#COPY conf/wp-config.php /var/www/html/wp-config.php
 
 EXPOSE 9000
 

@@ -30,7 +30,6 @@ define( 'DB_PASSWORD', 'inceptionpwd' );
 
 /** Database hostname */
 //define( 'DB_HOST', 'mariadb:3306' );
-/*define( 'DB_HOST', 'mariadb:3306' ); -> worked but without mariadb ?*/
 define( 'DB_HOST', 'localhost:/var/run/mysqld/mysqld.sock' );
 /*define( 'DB_HOST', 'mariadb' );*/
 
