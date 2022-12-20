@@ -4,34 +4,23 @@ ENV DEBIAN_FRONTEND noninteractive
 
 USER root
 
-#ARG	MYSQL_USER=inceptionuser \
-#	MYSQL_PASSWORD=inceptionpwd
-
-RUN apt-get -y update && \
-	apt-get install -y vim && \
-	apt-get install -y mariadb-server;
+RUN apt-get -y update
+RUN apt-get -y upgrade
+RUN apt-get install -y mariadb-server
+RUN apt-get install -y mariadb-client
+RUN apt-get install -y procps
+RUN apt-get install -y gettext-base
 
 EXPOSE 3306
 
-#COPY tools/mariadb-init.sh /var/www/html/mariadb-init.sh
-COPY tools/mariadb-init.sh /var/run/mysqld/mariadb-init.sh
-COPY conf/my.cnf /etc/mysql/my.cnf
-COPY conf/50-server.cnf /etc/mysal/mariadb.conf.d/50-server.cnf
+RUN mkdir /var/run/mysqld
+RUN touch /run/mysqld/mysqld.pid
+RUN touch /run/mysqld/mysqld.sock
+RUN chown mysql:mysql -R /run/mysqld
+COPY tools/mariadb-init.sh ./
+COPY tools/db.sql ./
+COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
-#RUN touch /var/www/html/test.sh
+RUN chmod -R 777 ./mariadb-init.sh
 
-#RUN echo '#!/bin/bash' >> /var/www/html/test.sh
-#RUN echo 'mysql -e "CREATE DATABASE IF NOT EXISTS db";' >> /var/www/html/test.sh
-#RUN echo 'mysql -e "CREATE USER '$MYSQL_USER'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD'";' >> /var/www/html/test.sh
-#RUN echo 'mysql -e "GRANT ALL ON db TO '$MYSQL_USER'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION";' >> /var/www/html/test.sh
-#RUN echo 'mysql -e "FLUSH PRIVILEGES";' >> /var/www/html/test.sh
-#RUN echo 'mysqld;' >> /var/www/html/test.sh
-
-RUN chmod -R 777 /var/run/mysqld/mariadb-init.sh
-RUN chmod 644 /etc/mysql/my.cnf
-RUN chmod -R 777 /run/mysqld
-RUN chmod -R 777 /var/lib/mysql
-
-#ENTRYPOINT ["mysqld"]
-#ENTRYPOINT ["tail", "-f", "/dev/null"]
-CMD ["/bin/bash", "/var/run/mysqld/mariadb-init.sh"]
+ENTRYPOINT ["/bin/bash", "/mariadb-init.sh"]

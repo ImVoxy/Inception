@@ -1,12 +1,11 @@
 #!/bin/bash
-service mysql start;
-#mysql -e "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;";
-#mysql -e "USE $MYSQL_DATABASE;CREATE USER '$MYSQL_USER'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD';";
-#mysql -e "USE $MYSQL_DATABASE;GRANT ALL PRIVILEGES ON $MYSQL_DATABASE TO '$MYSQL_USER'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD';";
-#mysql -e "FLUSH PRIVILEGES;";
-mysql -e "CREATE DATABASE IF NOT EXISTS db;";
-mysql -e "USE db;CREATE USER 'inceptionuser'@'localhost' IDENTIFIED BY 'inceptionpwd';";
-mysql -e "USE db;GRANT ALL ON db.* TO 'inceptionuser'@'localhost' IDENTIFIED BY 'inceptionpwd';";
-mysql -e "FLUSH PRIVILEGES;";
-service mysql stop;
-mysqld;
+
+service mysql start
+
+touch dbtmp
+envsubst < db.sql > dbtmp
+mysql < dbtmp
+
+service mysql stop
+
+exec mysqld_safe

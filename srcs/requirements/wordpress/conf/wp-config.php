@@ -30,8 +30,8 @@ define( 'DB_PASSWORD', 'inceptionpwd' );
 
 /** Database hostname */
 //define( 'DB_HOST', 'mariadb:3306' );
-define( 'DB_HOST', 'localhost:/var/run/mysqld/mysqld.sock' );
-/*define( 'DB_HOST', 'mariadb' );*/
+//define( 'DB_HOST', 'localhost:/var/lib/mysqld/mysqld.sock' );
+define( 'DB_HOST', 'mariadb' );
 
 
 /** Database charset to use in creating database tables. */
@@ -82,7 +82,7 @@ $table_prefix = 'wp_';
  *
  * @link https://wordpress.org/support/article/debugging-in-wordpress/
  */
-define( 'WP_DEBUG', false );
+define( 'WP_DEBUG', true );
 
 /* Add any custom values between this line and the "stop editing" line. */
 
